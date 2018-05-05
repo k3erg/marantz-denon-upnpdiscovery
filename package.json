@@ -1,0 +1,31 @@
+{
+  "name": "marantz-denon-upnpdiscovery",
+  "version": "0.0.1",
+  "description": "Find marantz and Denon AVRs advertising their services by upnp.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/k3erg/marantz-denon-upnpdiscovery.git"
+  },
+  "keywords": [
+    "marantz",
+    "denon",
+    "avr",
+    "upnp",
+    "discovery"
+  ],
+  "author": "Mike Kronenberg <mike.kronenberg@kronenberg.org> (http://www.kronenberg.org)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/k3erg/marantz-denon-upnpdiscovery/issues"
+  },
+  "homepage": "https://github.com/k3erg/marantz-denon-upnpdiscovery#readme",
+  "dependencies": {
+    "arp": "0.0.3",
+    "request": "^2.85.0",
+    "xml2js": "^0.4.19"
+  }
+}
