@@ -1,6 +1,6 @@
 {
   "name": "marantz-denon-upnpdiscovery",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Find marantz and Denon AVRs advertising their services by upnp.",
   "main": "index.js",
   "scripts": {

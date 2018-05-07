@@ -93,6 +93,7 @@ MarantzDenonUPnPDiscovery.prototype.getUPnPInfo = function(device, callback) {
                     device.friendlyName = device.friendlyName.replace(/^ACT-/, ''); // clean out UPnP junk
                     device.manufacturer = device.manufacturer.replace(/^ACT-/, ''); // clean out UPnP junk
                     device.model = device.model.replace(device.manufacturer + ' ', ''); // separate model from manufacturer
+                    device.firmwareVersion = result.root.device[0].firmware_version[0] || '';
                 }
             });
         }

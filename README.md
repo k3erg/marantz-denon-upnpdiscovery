@@ -27,11 +27,10 @@ var mdf = new MarantzDenonUPnPDiscovery(function(error, device) {
 
 ```
 
-### Tested on?
+## Tested on?
 
 marantz SR7011
 
 
 
 enjoy!
-
