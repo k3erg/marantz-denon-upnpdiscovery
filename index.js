@@ -2,6 +2,7 @@
     @fileoverview Find marantz and Denon AVRs advertising their services by upnp.
 
     @author Mike Kronenberg <mike.kronenberg@kronenberg.org> (http://www.kronenberg.org)
+    @license MIT
 */
 
 
