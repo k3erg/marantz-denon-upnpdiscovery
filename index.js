@@ -17,30 +17,33 @@ var parseString = require('xml2js').parseString;
 /**
     Find Denon and marantz devices advertising their services by upnp.
     @param {function} callback .
+    @constructor
 */
 function MarantzDenonUPnPDiscovery(callback) {
     var that = this;
     var foundDevices = {};                                                      // only report a device once
 
     // create socket
-    const socket = dgram.createSocket({type: 'udp4', reuseAddr: true});
-
-    // listen and send initial search for upnp root devices
+    var socket = dgram.createSocket({type: 'udp4', reuseAddr: true});
+    socket.unref();
     const search = new Buffer([
         'M-SEARCH * HTTP/1.1',
         'HOST: 239.255.255.250:1900',
+        'ST: upnp:rootdevice',
         'MAN: "ssdp:discover"',
         'MX: 3',
-        'ST: upnp:rootdevice'
+        '',
+        ''
     ].join('\r\n'));
-    socket.on('listening', () => {
-        socket.addMembership('239.255.255.250');
-        socket.send(search, 0, search.length, 1900, '239.255.255.250');
+
+    socket.on('error', function(err) {
+        console.log(`server error:\n${err.stack}`);
+        socket.close();
     });
 
-    // listen for denon urn
-    socket.on('message', (message) => {
+    socket.on('message', function(message, rinfo) {
         var messageString = message.toString();
+        console.log(messageString);
         if (messageString.match(/(d|D)enon/)) {
             location = messageString.match(/LOCATION: (.*?)(\d+\.\d+\.\d+\.\d+)(.*)/);
             if (location) {
@@ -67,13 +70,20 @@ function MarantzDenonUPnPDiscovery(callback) {
                         });
                     }
                 });
-        	}
+            }
         }
     });
 
-    // go
-    socket.bind(1900);
-    setTimeout(function() {socket.close();}, 5000);
+    socket.on('listening', function() {
+        socket.addMembership('239.255.255.250');
+        socket.setMulticastTTL(4);
+        const address = socket.address();
+        console.log(`server listening ${address.address}:${address.port}`);
+        socket.send(search, 0, search.length, 1900, '239.255.255.250');
+        setTimeout(function() {socket.close();}, 5000);
+    });
+
+    socket.bind(0);
 }
 
 
@@ -94,7 +104,17 @@ MarantzDenonUPnPDiscovery.prototype.getUPnPInfo = function(device, callback) {
                     device.friendlyName = device.friendlyName.replace(/^ACT-/, ''); // clean out UPnP junk
                     device.manufacturer = device.manufacturer.replace(/^ACT-/, ''); // clean out UPnP junk
                     device.model = device.model.replace(device.manufacturer + ' ', ''); // separate model from manufacturer
-                    device.firmwareVersion = result.root.device[0].firmware_version[0] || '';
+                    if (result.root.device[0].firmware_version) {
+                        device.firmwareVersion = result.root.device[0].firmware_version ? result.root.device[0].firmware_version[0] : '';
+                    } else if (result.root.device[0].deviceList) {
+                        var i;
+                        for (i = 0; i < result.root.device[0].deviceList[0].device.length; i++) {
+                            if (result.root.device[0].deviceList[0].device[i].firmware_version) {
+                                device.firmwareVersion = result.root.device[0].deviceList[0].device[i].firmware_version[0];
+                                break;
+                            }
+                        }
+                    }
                 }
             });
         }
