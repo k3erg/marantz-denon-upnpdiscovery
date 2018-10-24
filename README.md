@@ -1,3 +1,7 @@
+[![NPM](https://nodei.co/npm/marantz-denon-upnpdiscovery.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/marantz-denon-upnpdiscovery/)
+
+
+
 # marantz-denon-upnpdiscovery
 Find marantz and Denon AVRs advertising their services by upnp.
 
