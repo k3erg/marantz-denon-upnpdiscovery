@@ -19,10 +19,16 @@ var parseString = require('xml2js').parseString;
     @param {function} callback .
     @constructor
 */
-function MarantzDenonUPnPDiscovery(callback) {
+function MarantzDenonUPnPDiscovery(cb) {
     var that = this;
     var foundDevices = {};                                                      // only report a device once
 
+    var callback = function (error, device) {
+        if (device.manufacturer.match(/(^marantz$)|(^denon$)/i)) {
+            cb(error, device);
+        }
+    }
+    
     // create socket
     var socket = dgram.createSocket({type: 'udp4', reuseAddr: true});
     socket.unref();
@@ -43,8 +49,6 @@ function MarantzDenonUPnPDiscovery(callback) {
 
     socket.on('message', function(message, rinfo) {
         var messageString = message.toString();
-        console.log(messageString);
-        if (messageString.match(/(d|D)enon/)) {
             location = messageString.match(/LOCATION: (.*?)(\d+\.\d+\.\d+\.\d+)(.*)/);
             if (location) {
                 arp.getMAC(location[2], function(err, mac) {                    // lookup ip on the arp table to get the MacAddress
@@ -71,7 +75,6 @@ function MarantzDenonUPnPDiscovery(callback) {
                     }
                 });
             }
-        }
     });
 
     socket.on('listening', function() {

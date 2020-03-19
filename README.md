@@ -37,6 +37,7 @@ var mdf = new MarantzDenonUPnPDiscovery(function(error, device) {
 ## Tested on?
 
  * marantz SR7011
+ * marantz M-CR510
 
 
 
